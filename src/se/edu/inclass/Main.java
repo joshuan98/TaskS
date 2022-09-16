@@ -7,6 +7,8 @@ import se.edu.inclass.task.TaskNameComparator;
 
 import java.util.ArrayList;
 
+import java.util.stream.Collector;
+
 public class Main {
 
     private TaskNameComparator taskNameComparator;
@@ -21,12 +23,21 @@ public class Main {
         // printDataUsingStream(tasksData);
 
         // System.out.println("Printing deadlines");
-        // printDeadlines(tasksData);
+
+        ArrayList<Task> filteredList = filterTaskByString(tasksData, "11");
+        System.out.println("Data with string 11:");
+        printData(filteredList);
+
+        // System.out.println("Total number of deadlines: " +
+        // countDeadlines(tasksData));
+
+
         // printDeadlines(tasksData);
         // printDeadlinesUsingStream(tasksData);
 
         System.out.println("Total number of deadlines: " + countDeadlines(tasksData));
-        System.out.println("Total number of deadlines (using stream): " + countDeadlinesUsingStream(tasksData));
+        System.out.println("Total number of deadlines (using stream): "
+                + countDeadlinesUsingStream(tasksData));
     }
 
     private static int countDeadlines(ArrayList<Task> tasksData) {
@@ -40,9 +51,7 @@ public class Main {
     }
 
     private static int countDeadlinesUsingStream(ArrayList<Task> tasks) {
-        int count = (int) tasks.stream()
-                .filter(t -> t instanceof Deadline)
-                .count();
+        int count = (int) tasks.stream().filter(t -> t instanceof Deadline).count();
 
         return count;
     }
@@ -61,7 +70,7 @@ public class Main {
     }
 
     public static void printDeadlines(ArrayList<Task> tasksData) {
-        System.out.println("Printing deadlines using loops");
+        System.out.println("Printing data using loops");
         for (Task t : tasksData) {
             if (t instanceof Deadline) {
                 System.out.println(t);
@@ -70,14 +79,24 @@ public class Main {
     }
 
     public static void printDeadlinesUsingStream(ArrayList<Task> tasks) {
+        System.out.println("Printing sorted deadlines");
+        tasks.stream().filter(t -> t instanceof Deadline)
+                .sorted((a, b) -> a.getDescription().compareToIgnoreCase(b.getDescription()))
+                .forEach(System.out::println);
+
         System.out.println("Printing deadline using streams");
-        tasks.parallelStream()
-                .filter(t -> t instanceof Deadline) // lambda
+        tasks.parallelStream().filter(t -> t instanceof Deadline) // lambda
                 .forEach(System.out::println);
 
         System.out.println("without parallelization");
-        tasks.stream()
-                .filter(t -> t instanceof Deadline) // lambda
+        tasks.stream().filter(t -> t instanceof Deadline) // lambda
                 .forEach(System.out::println);
+    }
+
+    private static ArrayList<Task> filterTaskByString(ArrayList<Task> tasks, String filterString) {
+        ArrayList<Task> filteredList = (ArrayList<Task>) tasks.stream()
+                .filter(t -> t.getDescription().contains(filterString)).collect(toList());
+
+        return filteredList;
     }
 }
