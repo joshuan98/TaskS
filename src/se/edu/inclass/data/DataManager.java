@@ -38,7 +38,7 @@ public class DataManager {
         }
     }
 
-    private ArrayList readFile() throws IOException {
+    private ArrayList<String> readFile() throws IOException {
         if (!dataFile.exists()) {
             throw new FileNotFoundException();
         }
@@ -46,7 +46,7 @@ public class DataManager {
             System.out.println("empty file");
             throw new IOException();
         }
-        ArrayList<String> dataItems = (ArrayList) Files.readAllLines(dataFile.toPath(), Charset.defaultCharset());
+        ArrayList<String> dataItems = (ArrayList<String>) Files.readAllLines(dataFile.toPath(), Charset.defaultCharset());
 
         return dataItems;
     }
